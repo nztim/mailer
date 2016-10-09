@@ -108,7 +108,7 @@
             font-size:34px;
             font-weight:bold;
             line-height:100%;
-            padding:0;
+            padding: 15px 0 0 0;
             text-align:center;
             vertical-align:middle;
         }

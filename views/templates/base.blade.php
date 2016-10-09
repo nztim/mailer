@@ -121,7 +121,7 @@
 
         #headerImage{
             height:auto;
-            max-width:600px !important;
+            max-width: 100% !important;
         }
 
         /* /\/\/\/\/\/\/\/\/\/\ STANDARD STYLING: MAIN BODY /\/\/\/\/\/\/\/\/\/\ */
@@ -230,7 +230,7 @@
                                 <tr>
                                     <td class="headerContent">
                                         <a href="{{ url('/') }}">
-                                            <img src="http://placehold.it/200x100" style="max-width:600px;" id="headerImage"/>
+                                            <img src="http://placehold.it/200x100" alt="logo" id="headerImage"/>
                                         </a>
                                     </td>
                                 </tr>
@@ -241,7 +241,7 @@
                     <tr>
                         <td align="center" valign="top">
                             <!-- // Begin Template Body \\ -->
-                            <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody">
+                            <table border="0" cellpadding="0" cellspacing="0" width="640" id="templateBody">
                                 <tr>
                                     <td valign="top">
                                         <!-- // Begin Module: Standard Content \\ -->

@@ -2,16 +2,16 @@
 {{--
     Original:  https://github.com/mailchimp/email-blueprints/blob/master/templates/transactional_basic.html
     Sections:  main, footer (unsubscribe)
-    Variables: $subjectLine
+    Variables: $nztmailerSubject - added by Message class so title tag can be added automatically
     Link & button colour: #B72020 (search/replace)
 --}}
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!-- Facebook sharing information tags -->
-    <meta property="og:title" content="{{ $subjectLine }}" />
+    <meta property="og:title" content="{{ $nztmailerSubject }}" />
 
-    <title>{{ $subjectLine }}</title>
+    <title>{{ $nztmailerSubject }}</title>
     <style type="text/css">
         /* Client-specific Styles */
         #outlook a{padding:0;}

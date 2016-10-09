@@ -87,7 +87,7 @@ abstract class Message implements Job
 
     protected function send()
     {
-        $this->data['subjectLine'] = $this->subject;
+        $this->data['nztmailerSubject'] = $this->subject;
         $html = view($this->view)->with($this->data)->render();
         $inlined = CssInliner::process($html);
         $mail = app(Mailer::class);

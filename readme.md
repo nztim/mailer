@@ -3,7 +3,8 @@
 ### Installation
 * `composer require nztim/mailer`
 * Register the service provider: `NZTim\Mailer\MailerServiceProvider`
-* Optional: publish the base template and partials `php artisan vendor:publish`
+* (Optional) Publish the base template, partials and example email:
+    * `php artisan vendor:publish --provider="NZTim\Mailer\MailerServiceProvider"`
 
 ### Architecture
 * The email template hierarchy should contain the basic email structure as well as everything that doesn't change between messages

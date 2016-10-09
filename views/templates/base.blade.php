@@ -30,13 +30,13 @@
 
         /* Background color */
         body, #backgroundTable{
-            background-color:#FFFFFF;
+            background-color:#FCFCFC;
             font-family: -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif;
         }
 
         /* Content border */
         #templateContainer{
-            border: 1px solid #DDDDDD;
+            border: 1px solid #F1F1F1;
         }
 
         h1, .h1 {

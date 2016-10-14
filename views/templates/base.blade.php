@@ -86,7 +86,8 @@
             display:block;
             font-family: -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif;
             font-size:22px;
-            font-weight:bold;
+            font-weight:normal;
+            font-style: italic;
             line-height:100%;
             margin-top:0;
             margin-right:0;

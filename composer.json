@@ -5,7 +5,7 @@
   "require": {
     "php": ">=7.0.0",
     "pelago/emogrifier": "^1.1",
-    "nztim/queue": "^5.2"
+    "nztim/queue": ">=5.2"
   },
   "autoload": {
     "psr-4": {

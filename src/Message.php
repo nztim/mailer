@@ -6,6 +6,7 @@ use NZTim\Queue\Job;
 abstract class Message implements Job
 {
     protected $sender;
+    protected $senderName;
     protected $replyTo;
     protected $recipient;
     protected $recipientOverride;
@@ -15,10 +16,11 @@ abstract class Message implements Job
     protected $view;
     protected $data = [];
 
-    public function sender(string $sender) : Message
+    public function sender(string $sender, string $senderName = '') : Message
     {
         $this->validateEmail($sender);
         $this->sender = $sender;
+        $this->senderName = $senderName ?: null;
         return $this;
     }
 
@@ -91,11 +93,13 @@ abstract class Message implements Job
         $html = view($this->view)->with($this->data)->render();
         $inlined = CssInliner::process($html);
         $mail = app(Mailer::class);
-        $mail->send([], [], function($message) use ($inlined) {
-            /** @var Message $message */
+        $mail->send([], [], function(Message $message) use ($inlined) {
             $message->subject($this->subject)
                 ->to($this->recipientOverride ?: $this->recipient)
                 ->setBody($inlined, 'text/html');
+            if ($this->sender) {
+                $message->sender($this->sender, $this->senderName);
+            }
             if ($this->replyTo) {
                 $message->replyTo($this->replyTo);
             }

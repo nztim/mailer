@@ -1,5 +1,6 @@
 <?php namespace NZTim\Mailer;
 
+use Config;
 use Illuminate\Contracts\Mail\Mailer;
 use NZTim\Queue\Job;
 
@@ -15,6 +16,7 @@ abstract class Message implements Job
     protected $subject;
     protected $view;
     protected $data = [];
+    protected $backup;
 
     public function sender(string $sender, string $senderName = '') : Message
     {
@@ -93,14 +95,12 @@ abstract class Message implements Job
         $html = view($this->view)->with($this->data)->render();
         $inlined = CssInliner::process($html);
         $mail = app(Mailer::class);
+        $this->setupSender();
         $mail->send([], [], function($message) use ($inlined) {
             /** @var \Illuminate\Mail\Message $message */
             $message->subject($this->subject)
                 ->to($this->recipientOverride ?: $this->recipient)
                 ->setBody($inlined, 'text/html');
-            if ($this->sender) {
-                $message->sender($this->sender, $this->senderName);
-            }
             if ($this->replyTo) {
                 $message->replyTo($this->replyTo);
             }
@@ -111,5 +111,23 @@ abstract class Message implements Job
                 $message->bcc($this->bcc);
             }
         });
+        $this->restoreSender();
+    }
+
+    protected function setupSender()
+    {
+        if (!$this->sender) {
+            return;
+        }
+        $this->backup['mail.from'] = Config::get('mail.from');
+        Config::set('mail.from', [$this->sender, $this->senderName]);
+    }
+
+    protected function restoreSender()
+    {
+        if (!$this->sender) {
+            return;
+        }
+        Config::set('mail.from', $this->backup['mail.from']);
     }
 }

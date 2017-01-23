@@ -22,7 +22,7 @@ abstract class Message implements Job
     {
         $this->validateEmail($sender);
         $this->sender = $sender;
-        $this->senderName = $senderName ?: null;
+        $this->senderName = $senderName;
         return $this;
     }
 
@@ -94,8 +94,8 @@ abstract class Message implements Job
         $this->data['nztmailerSubject'] = $this->subject;
         $html = view($this->view)->with($this->data)->render();
         $inlined = CssInliner::process($html);
-        $mail = app(Mailer::class);
         $this->setupSender();
+        $mail = app(Mailer::class);
         $mail->send([], [], function($message) use ($inlined) {
             /** @var \Illuminate\Mail\Message $message */
             $message->subject($this->subject)
@@ -116,18 +116,17 @@ abstract class Message implements Job
 
     protected function setupSender()
     {
+        $this->backup['mail.from'] = Config::get('mail.from');
         if (!$this->sender) {
             return;
         }
-        $this->backup['mail.from'] = Config::get('mail.from');
-        Config::set('mail.from', [$this->sender, $this->senderName]);
+        $from['address'] = $this->sender;
+        $from['name'] = $this->senderName ?? null;
+        Config::set('mail.from', $from);
     }
 
     protected function restoreSender()
     {
-        if (!$this->sender) {
-            return;
-        }
         Config::set('mail.from', $this->backup['mail.from']);
     }
 }

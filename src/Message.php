@@ -93,7 +93,8 @@ abstract class Message implements Job
         $html = view($this->view)->with($this->data)->render();
         $inlined = CssInliner::process($html);
         $mail = app(Mailer::class);
-        $mail->send([], [], function(Message $message) use ($inlined) {
+        $mail->send([], [], function($message) use ($inlined) {
+            /** @var \Illuminate\Mail\Message $message */
             $message->subject($this->subject)
                 ->to($this->recipientOverride ?: $this->recipient)
                 ->setBody($inlined, 'text/html');

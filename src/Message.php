@@ -95,6 +95,9 @@ abstract class Message implements Job
         $html = view($this->view)->with($this->data)->render();
         $inlined = CssInliner::process($html);
         $this->setupSender();
+        // This removes the existing shared object in the container so it is re-instantiated with the new config values
+        // Container key is specified here: https://laravel.com/docs/5.3/facades
+        app()->forgetInstance('mailer');
         $mail = app(Mailer::class);
         $mail->send([], [], function($message) use ($inlined) {
             /** @var \Illuminate\Mail\Message $message */

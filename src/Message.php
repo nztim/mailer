@@ -16,7 +16,9 @@ abstract class Message implements Job
     protected $subject;
     protected $view;
     protected $data = [];
-    protected $backup;
+    /** @var \Illuminate\Mail\Mailer $mailer */
+    protected $mailer;
+    protected $backupFrom;
 
     public function sender(string $sender, string $senderName = '') : Message
     {
@@ -94,12 +96,9 @@ abstract class Message implements Job
         $this->data['nztmailerSubject'] = $this->subject;
         $html = view($this->view)->with($this->data)->render();
         $inlined = CssInliner::process($html);
+        $this->mailer = app(Mailer::class);
         $this->setupSender();
-        // This removes the existing shared object in the container so it is re-instantiated with the new config values
-        // Container key is specified here: https://laravel.com/docs/5.3/facades
-        app()->forgetInstance('mailer');
-        $mail = app(Mailer::class);
-        $mail->send([], [], function($message) use ($inlined) {
+        $this->mailer->send([], [], function($message) use ($inlined) {
             /** @var \Illuminate\Mail\Message $message */
             $message->subject($this->subject)
                 ->to($this->recipientOverride ?: $this->recipient)
@@ -119,17 +118,15 @@ abstract class Message implements Job
 
     protected function setupSender()
     {
-        $this->backup['mail.from'] = Config::get('mail.from');
+        $this->backupFrom = Config::get('mail.from');
         if (!$this->sender) {
             return;
         }
-        $from['address'] = $this->sender;
-        $from['name'] = $this->senderName ?? null;
-        Config::set('mail.from', $from);
+        $this->mailer->alwaysFrom($this->sender, $this->senderName ?? null);
     }
 
     protected function restoreSender()
     {
-        Config::set('mail.from', $this->backup['mail.from']);
+        $this->mailer->alwaysFrom($this->backupFrom['address'], $this->backupFrom['name']);
     }
 }

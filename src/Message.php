@@ -16,8 +16,6 @@ abstract class Message implements Job
     protected $subject;
     protected $view;
     protected $data = [];
-    /** @var \Illuminate\Mail\Mailer $mailer */
-    protected $mailer;
     protected $backupFrom;
 
     public function sender(string $sender, string $senderName = '') : Message
@@ -96,13 +94,15 @@ abstract class Message implements Job
         $this->data['nztmailerSubject'] = $this->subject;
         $html = view($this->view)->with($this->data)->render();
         $inlined = CssInliner::process($html);
-        $this->mailer = app(Mailer::class);
-        $this->setupSender();
-        $this->mailer->send([], [], function($message) use ($inlined) {
+        $mailer = app(Mailer::class);
+        $mailer->send([], [], function($message) use ($inlined) {
             /** @var \Illuminate\Mail\Message $message */
             $message->subject($this->subject)
                 ->to($this->recipientOverride ?: $this->recipient)
                 ->setBody($inlined, 'text/html');
+            if ($this->sender) {
+                $message->from($this->sender, $this->senderName);
+            }
             if ($this->replyTo) {
                 $message->replyTo($this->replyTo);
             }
@@ -113,20 +113,5 @@ abstract class Message implements Job
                 $message->bcc($this->bcc);
             }
         });
-        $this->restoreSender();
-    }
-
-    protected function setupSender()
-    {
-        $this->backupFrom = Config::get('mail.from');
-        if (!$this->sender) {
-            return;
-        }
-        $this->mailer->alwaysFrom($this->sender, $this->senderName ?? null);
-    }
-
-    protected function restoreSender()
-    {
-        $this->mailer->alwaysFrom($this->backupFrom['address'], $this->backupFrom['name']);
     }
 }

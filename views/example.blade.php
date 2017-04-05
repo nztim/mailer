@@ -1,12 +1,12 @@
-@extends('emails.templates.base')
+@extends('emails.templates.responsive.base')
 
 @section('main')
-    <h1>The title of the email</h1>
-    <p>Lorem ipsum dolor sit amet, tibique moderatius scribentur pro an, quodsi oporteat no his, in sed idque dicit consul. Fugit soleat graeci an nec, quis adolescens sit cu.</p>
-    @include('emails.templates.button', ['link' => 'https://google.com', 'text' => 'Example button'])
-    <p>Eu aeterno <a href="https://google.com">gubergren mei</a>, ad per quando nonumes. Est no prompta constituto. Sea no tota altera sententiae, pri suscipit atomorum urbanitas ad, quot elit sanctus eum ne.</p>
-    @include('emails.templates.image', ['src' => 'http://placehold.it/350x150'])
-    <p>Eu aeterno <a href="https://google.com">gubergren mei</a>, ad per quando nonumes. Est no prompta constituto. Sea no tota altera sententiae, pri suscipit atomorum urbanitas ad, quot elit sanctus eum ne.</p>
+    @include('emails.templates.responsive._title', ['title' => 'The title of the email'])
+    @include('emails.templates.responsive._body', ['content' => 'Lorem ipsum dolor sit amet, tibique moderatius scribentur pro an, quodsi oporteat no his, in sed idque dicit consul. Fugit soleat graeci an nec, quis adolescens sit cu.'])
+    @include('emails.templates.responsive._button', ['link' => '#', 'text' => 'Example button'])
+    @include('emails.templates.responsive._body', ['content' => 'Lorem ipsum dolor sit amet, tibique moderatius scribentur pro an, quodsi oporteat no his, in sed idque dicit consul. Fugit soleat graeci an nec, quis adolescens sit cu.'])
+    @include('emails.templates.responsive._image', ['src' => 'http://placehold.it/350x150', 'alt' => 'An image', 'width' => '350', 'height' => '150'])
+    @include('emails.templates.responsive._body', ['content' => 'Lorem ipsum dolor sit amet, tibique moderatius scribentur pro an, quodsi oporteat no his, in sed idque dicit consul. Fugit soleat graeci an nec, quis adolescens sit cu.'])
 @stop
 
 @section('footer')

@@ -22,7 +22,7 @@
     * `(new ExampleEmail)->recipient($user->email())->handle()`
 * Example of queueing a new email with NZTim\Queue:
     * `QueueMgr::add((new ExampleEmail)->recipient($user->email()))`
- 
+* If `.env` value for `SENT_ITEMS` exists then all messages will be sent bcc to this address
 ### Other
 
 GMail filter for sending on behalf via Mailgun:

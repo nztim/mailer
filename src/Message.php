@@ -112,6 +112,11 @@ abstract class Message implements Job
             if ($this->bcc && !$this->recipientOverride) {
                 $message->bcc($this->bcc);
             }
+            // BCC to sent-items
+            $sent = config('mail.sent-items');
+            if ($sent && !$this->recipientOverride) {
+                $message->bcc($sent);
+            }
         });
     }
 }

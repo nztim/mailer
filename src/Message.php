@@ -1,6 +1,5 @@
 <?php namespace NZTim\Mailer;
 
-use Config;
 use Illuminate\Contracts\Mail\Mailer;
 use NZTim\Queue\Job;
 

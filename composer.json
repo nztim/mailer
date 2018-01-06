@@ -4,7 +4,7 @@
   "license": "MIT",
   "require": {
     "php": ">=7.0.0",
-    "pelago/emogrifier": "^1.1",
+    "pelago/emogrifier": "^2.0",
     "nztim/queue": ">=5.2"
   },
   "autoload": {

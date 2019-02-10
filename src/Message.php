@@ -3,6 +3,7 @@
 use Html2Text\Html2Text;
 use Illuminate\Contracts\Mail\Mailer;
 use NZTim\Queue\Job;
+use NZTim\Queue\QueueManager;
 
 abstract class Message implements Job
 {
@@ -16,9 +17,8 @@ abstract class Message implements Job
     protected $subject;
     protected $view;
     protected $data = [];
-    protected $backupFrom;
 
-    public function sender(string $sender, string $senderName = '') : Message
+    public function sender(string $sender, string $senderName = ''): Message
     {
         $this->validateEmail($sender);
         $this->sender = $sender;
@@ -26,54 +26,54 @@ abstract class Message implements Job
         return $this;
     }
 
-    public function replyTo(string $replyTo) : Message
+    public function replyTo(string $replyTo): Message
     {
         $this->validateEmail($replyTo);
         $this->replyTo = $replyTo;
         return $this;
     }
 
-    public function recipient(string $recipient) : Message
+    public function recipient(string $recipient): Message
     {
         $this->validateEmail($recipient);
         $this->recipient = $recipient;
         return $this;
     }
 
-    public function overrideRecipient(string $recipientOverride) : Message
+    public function overrideRecipient(string $recipientOverride): Message
     {
         $this->validateEmail($recipientOverride);
         $this->recipientOverride = $recipientOverride;
         return $this;
     }
 
-    public function cc(string $cc) : Message
+    public function cc(string $cc): Message
     {
         $this->validateEmail($cc);
         $this->cc = $cc;
         return $this;
     }
 
-    public function bcc(string $bcc) : Message
+    public function bcc(string $bcc): Message
     {
         $this->validateEmail($bcc);
         $this->bcc = $bcc;
         return $this;
     }
 
-    public function subject(string $subject) : Message
+    public function subject(string $subject): Message
     {
         $this->subject = $subject;
         return $this;
     }
 
-    public function view(string $view) : Message
+    public function view(string $view): Message
     {
         $this->view = $view;
         return $this;
     }
 
-    public function data(array $data) : Message
+    public function data(array $data): Message
     {
         $this->data = array_merge($this->data, $data);
         return $this;
@@ -92,10 +92,11 @@ abstract class Message implements Job
     protected function send()
     {
         $this->data['nztmailerSubject'] = $this->subject;
-        $html = view($this->view)->with($this->data)->render();
+        $html = CssInliner::process(view($this->view)->with($this->data)->render());
+        $text = Html2Text::convert($html);
         $mailer = app(Mailer::class);
-        $data = ['html' => CssInliner::process($html), 'text' => Html2Text::convert($html)];
-        $mailer->send(['nztmailer::echo-html', 'nztmailer::echo-text'], $data, function($message) {
+        $data = ['html' => $html, 'text' => $text];
+        $mailer->send(['nztmailer::echo-html', 'nztmailer::echo-text'], $data, function ($message) {
             /** @var \Illuminate\Mail\Message $message */
             $message
                 ->subject($this->subject)
@@ -113,5 +114,19 @@ abstract class Message implements Job
                 $message->bcc($this->bcc);
             }
         });
+        if (!$this->recipientOverride) {
+            $event = new MessageSent([
+                'sender'     => $this->sender,
+                'senderName' => $this->senderName,
+                'replyTo'    => $this->replyTo,
+                'recipient'  => $this->recipient,
+                'cc'         => $this->cc,
+                'bcc'        => $this->bcc,
+                'subject'    => $this->subject,
+                'html'       => $html,
+                'text'       => $text,
+            ]);
+            app(QueueManager::class)->add($event);
+        }
     }
 }

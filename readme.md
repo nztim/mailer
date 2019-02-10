@@ -22,6 +22,9 @@
     * `(new ExampleEmail)->recipient($user->email())->handle()`
 * Example of queueing a new email with NZTim\Queue:
     * `QueueMgr::add((new ExampleEmail)->recipient($user->email()))`
+* On message send a `NZTim\Mailer\MessageSent` event is fired.
+    * Can be used to log or otherwise store outgoing messages.  
+    * This is bypassed when a recipientOverride is specified.
 
 ### Other
 
@@ -29,3 +32,7 @@ GMail filter for sending on behalf via Mailgun:
 * From: me@domain.com
 * Has the words: bcc:me@domain.com
 * Skip the inbox, mark as read, apply the label Auto, never send to spam
+
+### Changelog
+* 11/2/2019 v2.0: Added MessageSent event.
+* 10/2/2019 v1.6: Added automatically generated plain text versions of HTML email.

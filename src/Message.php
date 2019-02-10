@@ -1,5 +1,6 @@
 <?php namespace NZTim\Mailer;
 
+use Html2Text\Html2Text;
 use Illuminate\Contracts\Mail\Mailer;
 use NZTim\Queue\Job;
 
@@ -92,13 +93,13 @@ abstract class Message implements Job
     {
         $this->data['nztmailerSubject'] = $this->subject;
         $html = view($this->view)->with($this->data)->render();
-        $inlined = CssInliner::process($html);
         $mailer = app(Mailer::class);
-        $mailer->send([], [], function($message) use ($inlined) {
+        $data = ['html' => CssInliner::process($html), 'text' => Html2Text::convert($html)];
+        $mailer->send(['nztmailer::echo-html', 'nztmailer::echo-text'], $data, function($message) {
             /** @var \Illuminate\Mail\Message $message */
-            $message->subject($this->subject)
-                ->to($this->recipientOverride ?: $this->recipient)
-                ->setBody($inlined, 'text/html');
+            $message
+                ->subject($this->subject)
+                ->to($this->recipientOverride ?: $this->recipient);
             if ($this->sender) {
                 $message->from($this->sender, $this->senderName);
             }

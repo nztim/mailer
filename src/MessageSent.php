@@ -1,9 +1,11 @@
 <?php namespace NZTim\Mailer;
 
+use Carbon\Carbon;
 use NZTim\Queue\Job;
 
 class MessageSent implements Job
 {
+    protected $date;
     protected $sender;
     protected $senderName;
     protected $replyTo;
@@ -30,11 +32,17 @@ class MessageSent implements Job
         foreach ($fields as $field) {
             $this->$field = $data[$field] ?? '';
         }
+        $this->date = now();
     }
 
     public function handle()
     {
         event($this);
+    }
+
+    public function date(): Carbon
+    {
+        return $this->date;
     }
 
     public function sender(): string
@@ -80,5 +88,21 @@ class MessageSent implements Job
     public function text(): string
     {
         return $this->text;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'date' => $this->date,
+            'sender'     => $this->sender(),
+            'senderName' => $this->senderName(),
+            'replyTo'    => $this->replyTo(),
+            'recipient'  => $this->recipient(),
+            'cc'         => $this->cc(),
+            'bcc'        => $this->bcc(),
+            'subject'    => $this->subject(),
+            'html'       => $this->html(),
+            'text'       => $this->text(),
+        ];
     }
 }

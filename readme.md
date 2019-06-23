@@ -43,5 +43,6 @@ GMail filter for sending on behalf via Mailgun:
 * Skip the inbox, mark as read, apply the label Auto, never send to spam
 
 ### Changelog
+* 24/6/2019 v3.0: Add Message test methods.
 * 11/2/2019 v2.0: Added MessageSent event.
 * 10/2/2019 v1.6: Added automatically generated plain text versions of HTML email.

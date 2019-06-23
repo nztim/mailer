@@ -26,6 +26,15 @@
     * Can be used to log or otherwise store outgoing messages.  
     * This is bypassed when a recipientOverride is specified.
 
+### Testing
+* Each Message must have a `testLabel()` and `test()` method.
+* If you wish to use the TestMessages command then implement these methods:
+    * `testLabel()` method should return a menu item (string).
+    * `test()` should use `overrideRecipient()` to send an example message.
+* Then extend `TestEmailsCommand` in your application and:
+    * Set `$recipient` to an appropriate default receipient for your tests.
+    * Register the Message classes to be tests in your `tests()` method.
+
 ### Other
 
 GMail filter for sending on behalf via Mailgun:

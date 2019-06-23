@@ -88,6 +88,9 @@ abstract class Message implements Job
 
     // Build and send() it
     abstract public function handle();
+    // Test this email
+    abstract public function testLabel(): string;
+    abstract public function test(string $recipient);
 
     protected function send()
     {

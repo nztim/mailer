@@ -3,10 +3,10 @@
     "description": "Email for Laravel 5",
     "license": "MIT",
     "require": {
-        "php": ">=7.0.0",
-        "pelago/emogrifier": "^2.0",
+        "php": ">=7.3",
         "nztim/queue": ">=5.2",
-        "soundasleep/html2text": "^0.5.0"
+        "soundasleep/html2text": "^1.1",
+        "tijsverkoyen/css-to-inline-styles": "^2.2.2"
     },
     "autoload": {
         "psr-4": {

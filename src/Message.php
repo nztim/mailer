@@ -1,9 +1,9 @@
 <?php namespace NZTim\Mailer;
 
-use Html2Text\Html2Text;
 use Illuminate\Contracts\Mail\Mailer;
 use NZTim\Queue\Job;
 use NZTim\Queue\QueueManager;
+use Soundasleep\Html2Text;
 
 abstract class Message implements Job
 {
@@ -95,7 +95,7 @@ abstract class Message implements Job
     protected function send()
     {
         $this->data['nztmailerSubject'] = $this->subject;
-        $html = CssInliner::process(view($this->view)->with($this->data)->render());
+        $html = app(CssInliner::class)->process(view($this->view)->with($this->data)->render());
         $text = Html2Text::convert($html);
         $mailer = app(Mailer::class);
         $data = ['html' => $html, 'text' => $text];

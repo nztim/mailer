@@ -21,5 +21,6 @@
             "name": "Tim",
             "email": "tim@nztim.com"
         }
-    ]
+    ],
+    "abandoned": "nztim/mailer2"
 }
